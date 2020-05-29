@@ -1,21 +1,21 @@
-# Decodificaci髇 de archivos RAW con R
-# www.datosimagensonido.com
+# Decodificaci贸n de archivos RAW con R
+# www.overfitting.net
 
 
 # FUNCIONES RAW
 
 LoadRAW = function(filename, verbose=T, scale=T, integer=F) {
-  # Lee archivo RAW carg醤dolo en una matriz
-  # scale=T: sustrae offset de negro y escala saturaci髇 al fondo de escala
-  #          en otro caso no escala valores num閞icos RAW
+  # Lee archivo RAW carg谩ndolo en una matriz
+  # scale=T: sustrae offset de negro y escala saturaci贸n al fondo de escala
+  #          en otro caso no escala valores num茅ricos RAW
   # integer=F: datos RAW en rango coma flotante 0..1
   #            en otro caso rango entero 0..65535 (16 bits)
   library(tiff)  # Para leer el TIFF generado por DCRAW
   
-  cmd=paste0("dcraw ",  # Construimos comando de l韓ea DCRAW
+  cmd=paste0("dcraw ",  # Construimos comando de l铆nea DCRAW
       iif(verbose, "-v ", ""),
       iif(scale, "-d -r 1 1 1 1", "-D"),  # RAW escalado (-d) o puro (-D)
-      " -t 0 -4 -T ", filename)  # Sin rotaci髇 (-t), lineal (-4), TIFF (-T)
+      " -t 0 -4 -T ", filename)  # Sin rotaci贸n (-t), lineal (-4), TIFF (-T)
   if (verbose) cat(paste0(cmd, "\n"))  # Mostrar comando en consola
   system(cmd)
   
@@ -27,7 +27,7 @@ LoadRAW = function(filename, verbose=T, scale=T, integer=F) {
 }
 
 WhitebalanceRAW = function(raw, pattern="RG/GB",
-    wb=c(2.13248, 1.000000, 1.000000, 1.480864)) {  # Luz de d韆 Canon 350D
+    wb=c(2.13248, 1.000000, 1.000000, 1.480864)) {  # Luz de d铆a Canon 350D
   # Aplica balance de blancos (requiere RAW)
   NROW=nrow(raw)
   if (NROW%%2 | ncol(raw)%%2 |
@@ -39,8 +39,8 @@ WhitebalanceRAW = function(raw, pattern="RG/GB",
   } else {                       mul=c(2,4,1,3)
   }
 
-  # 蚽dices Bayer: se calculan y almacenan solo una vez
-  i=which(row(raw)%%2 & col(raw)%%2)  # Fotosito R de un patr髇 RG/GB
+  # 脥ndices Bayer: se calculan y almacenan solo una vez
+  i=which(row(raw)%%2 & col(raw)%%2)  # Fotosito R de un patr贸n RG/GB
   raw[i]       =raw[i]       *wb[mul[1]]
   raw[i+NROW]  =raw[i+NROW]  *wb[mul[2]]
   raw[i+1]     =raw[i+1]     *wb[mul[3]]
@@ -52,13 +52,13 @@ WhitebalanceRAW = function(raw, pattern="RG/GB",
 }
 
 DebayerRAW = function(raw, pattern="RG/GB", averageG=T) {
-  # Deshace patr髇 de Bayer (requiere RAW)
+  # Deshace patr贸n de Bayer (requiere RAW)
   NROW=nrow(raw)
   if (NROW%%2 | ncol(raw)%%2 |
       !(pattern %in% c("RG/GB", "BG/GR", "GR/BG", "GB/RG"))) return (-1)
   
-  # 蚽dices Bayer: se calculan y almacenan solo una vez
-  i=which(row(raw)%%2 & col(raw)%%2)  # Fotosito R de un patr髇 RG/GB
+  # 脥ndices Bayer: se calculan y almacenan solo una vez
+  i=which(row(raw)%%2 & col(raw)%%2)  # Fotosito R de un patr贸n RG/GB
   if (averageG) {  # Devuelve {R, (G1+G2)/2, B}
     if        (pattern=="RG/GB") {
       img=c(raw[i], (raw[i+NROW]+raw[i+1])/2, raw[i+NROW+1])
