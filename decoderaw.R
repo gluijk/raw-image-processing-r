@@ -1,5 +1,6 @@
 # Decodificación de archivos RAW con R
 # www.overfitting.net
+# https://www.overfitting.net/2018/06/decodificacion-de-archivos-raw-con-r.html
 
 
 # FUNCIONES RAW
